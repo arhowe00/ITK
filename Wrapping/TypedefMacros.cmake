@@ -779,6 +779,10 @@ macro(itk_wrap_simple_type wrap_class swig_name)
     add_python_vec_typemap("${swig_name}" "${template_params}")
   endif()
 
+  if("${cpp_name}" STREQUAL "itk::Size")
+    add_numpy_seq_typemap("${swig_name}" "${template_params}")
+  endif()
+
   if("${cpp_name}" STREQUAL "itk::Array")
     add_python_variable_length_seq_typemap("${swig_name}" "${template_params}")
   endif()

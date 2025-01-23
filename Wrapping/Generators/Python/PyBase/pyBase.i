@@ -1299,6 +1299,65 @@ str = str
     }
 %enddef
 
+// numpy.int64 array to itk::Size. It must be unsigned (size in #4039)
+
+%include "numpy.i"
+
+%define DECL_NUMPY_SEQ_TYPEMAP(swig_name, dim)
+
+    %typemap(in) swig_name & (swig_name itks) {
+        if (PyArray_Check($input)) {
+            PyArrayObject *array = (PyArrayObject *)$input;
+            if (PyArray_TYPE(array) != NPY_INT) {
+                PyErr_SetString(PyExc_ValueError, "NumPy array must be int.");
+                SWIG_fail;
+            }
+
+            void *data = PyArray_DATA(array);
+            for (int i = 0; i < dim; i++) {
+                itks[i] = (type)((int *)data)[i];
+            }
+            $1 = &itks;
+        } else {
+            PyErr_SetString(PyExc_TypeError, "Expecting a NumPy array.");
+            SWIG_fail;
+        }
+    }
+
+    %typemap(typecheck) swig_name & {
+        if (PyArray_Check($input)) {
+            PyArrayObject *array = (PyArrayObject *)$input;
+            if (PyArray_DIM(array, 0) == dim &&
+                (PyArray_TYPE(array) == NPY_INT)) {
+                _v = 1;
+            } else {
+                _v = 0;
+            }
+        } else {
+            _v = 0;
+        }
+    }
+
+    %extend swig_name {
+        type __getitem__(unsigned long d) {
+            if (d >= dim) { throw std::out_of_range("swig_name index out of range."); }
+            return self->operator[](d);
+        }
+        void __setitem__(unsigned long d, type v) {
+            if (d >= dim) { throw std::out_of_range("swig_name index out of range."); }
+            self->operator[](d) = v;
+        }
+        static unsigned int __len__() {
+            return dim;
+        }
+        std::string __repr__() {
+            std::ostringstream msg;
+            msg << "swig_name (" << *self << ")";
+            return msg.str();
+        }
+    }
+
+%enddef
 
 // some code from stl
 

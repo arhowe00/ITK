@@ -457,6 +457,11 @@ macro(ADD_PYTHON_SEQ_TYPEMAP swig_name dim)
   string(APPEND ITK_WRAP_PYTHON_SWIG_EXT "DECL_PYTHON_SEQ_TYPEMAP(${swig_name}, ${dim})\n")
 endmacro()
 
+macro(ADD_NUMPY_SEQ_TYPEMAP swig_name dim)
+    string(APPEND ITK_WRAP_PYTHON_SWIG_EXT "DECL_NUMPY_SEQ_TYPEMAP(${swig_name},
+    ${dim})\n")
+endmacro()
+
 macro(ADD_PYTHON_VEC_TYPEMAP swig_name template_params)
   string(
     REGEX

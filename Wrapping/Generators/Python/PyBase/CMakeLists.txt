@@ -1,9 +1,12 @@
 itk_wrap_module("ITKPyBase" Python)
 
+set(WRAPPER_INCLUDE_FILES
+  "${CMAKE_SOURCE_DIR}/Modules/ThirdParty/numpy/src/numpy/numpy/_core/include")
 set(WRAPPER_LIBRARY_DEPENDS)
 set(WRAPPER_LIBRARY_LINK_LIBRARIES)
 
-set(WRAPPER_LIBRARY_SWIG_INPUTS "${CMAKE_CURRENT_SOURCE_DIR}/pyBase.i")
+set(WRAPPER_LIBRARY_SWIG_INPUTS "${CMAKE_CURRENT_SOURCE_DIR}/pyBase.i"
+  "${CMAKE_CURRENT_SOURCE_DIR}/numpy.i")
 
 add_python_config_template(
   "cerr"
